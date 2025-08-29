@@ -119,20 +119,21 @@ async function loadPokemon() {
 async function fetchPokemonData(pokemonId) {
     try {
         // TODO 2.1: Hacer una petición fetch a la API
-        // PISTA: const response = await fetch(POKEAPI_BASE_URL + pokemonId);
+        const response = await fetch(POKEAPI_BASE_URL + pokemonId);
         // ¿Por qué usamos await? ¡Porque fetch() devuelve una promesa!
         
         /* ESCRIBE TU CÓDIGO AQUÍ */
         
         
         // TODO 2.2: Verificar si la respuesta es exitosa
-        // PISTA: if (!response.ok) { throw new Error(`Error HTTP: ${response.status}`); }
+        if (!response.ok) { throw new Error(`Error HTTP: ${response.status}`); }
         
         /* ESCRIBE TU CÓDIGO AQUÍ */
         
         
         // TODO 2.3: Convertir la respuesta a JSON
-        // PISTA: const pokemonData = await response.json();
+        const pokemonData = await response.json();
+        console.log("datos del pokemon",pokemonData)
         // ¿Por qué usamos await? ¡Porque .json() también devuelve una promesa!
         
         /* ESCRIBE TU CÓDIGO AQUÍ */
@@ -145,12 +146,15 @@ async function fetchPokemonData(pokemonId) {
         
         /* ESCRIBE TU CÓDIGO AQUÍ */
         return {
-            // id: ?,
-            // name: ?,
-            // height: ?,
-            // weight: ?,
-            // types: ?,
-            // sprite: ?
+            id:pokemonData,
+            name: pokemonData.name,
+            height:pokemonData.height, 
+            weight: pokemonData.weight,
+            types: pokemonData.types.map(type => type.type.name),
+            sprite: pokemonData.sprites.other['official-artwork'].front_default || pokemonData.sprites.front_default,
+            ataque: pokemonData.stats[1].base_stat,
+            defensa: pokemonData.stats[2].base_stat,
+            velocidad: pokemonData.stats[5].base_stat,
         };
         
     } catch (error) {
@@ -173,7 +177,7 @@ async function fetchPokemonData(pokemonId) {
 
 function renderPokemonCards(pokemonList) {
     // TODO 3.1: Limpiar el contenedor
-    // PISTA: pokemonContainer.innerHTML = '';
+    pokemonContainer.innerHTML = '';
     
     /* ESCRIBE TU CÓDIGO AQUÍ */
     
@@ -183,7 +187,11 @@ function renderPokemonCards(pokemonList) {
     // Dentro del forEach, usa createPokemonCard() y appendChild()
     
     /* ESCRIBE TU CÓDIGO AQUÍ */
-    
+    pokemonList.forEach(element => {
+        const card = createPokemonCard(element);
+        pokemonContainer.appendChild(card);
+        
+    });
     
 }
 
@@ -229,6 +237,20 @@ function createPokemonCard(pokemon) {
                 <div class="stat-value">${weightInKg}kg</div>
             </div>
         </div>
+    
+            <div class="stat">
+                <div class="stat-label">Ataque</div>
+                <div class="stat-value">${pokemon.ataque} Newton</div>
+            </div>
+            <div class="stat">
+                <div class="stat-label">Defensa</div>
+                <div class="stat-value">${pokemon.defensa} Kg</div>
+            </div>
+            <div class="stat">
+                <div class="stat-label">Velocidad</div>
+                <div class="stat-value">${pokemon.velocidad}M/Seg</div>
+            </div>
+        </div>
         
         <div class="pokemon-types">
             ${typeBadges}
@@ -259,7 +281,7 @@ function showError() {
 
 // ✅ Función para manejar errores de carga de imágenes (YA COMPLETADA)
 function handleImageError(img) {
-    img.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTIwIiBoZWlnaHQ9IjEyMCIgdmlld0JveD0iMCAwIDEyMCAxMjAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxMjAiIGhlaWdodD0iMTIwIiBmaWxsPSIjRjVGN0ZBIi8+CjxwYXRoIGQ9Ik02MCA4MEw0MCA0MEg4MEw2MCA4MFoiIGZpbGw9IiNDM0NGRTIiLz4KPHRleHQgeD0iNjAiIHk9IjEwMCIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjEyIiBmaWxsPSIjNjY2IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5JbWFnZW4gbm8gZGlzcG9uaWJsZTwvdGV4dD4KPC9zdmc+';
+    img.src = 'https://th.bing.com/th/id/OIP._bdXRp5kdDyb_L5hx_icTgHaD_?w=157&h=104&c=7&bgcl=f835d4&r=0&o=6&cb=thws4&pid=13.1';
     img.alt = 'Imagen no disponible';
 }
 
